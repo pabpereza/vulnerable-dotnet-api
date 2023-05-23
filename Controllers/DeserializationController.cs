@@ -18,11 +18,18 @@ public class DesController : ControllerBase
     }
 
     [HttpPost]
-    public void Post(Deserialization body)
+    public IActionResult JsonStringBody()
     {
-        Console.WriteLine(JsonConvert.DeserializeObject<object>(body.Body,
-                // Include TypeNameHandling.All to allow for a more smooth casting and check
-                new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All })
-        );
+        
+        // Read the request body into a string with readasync and set AllowSynchronousIO to true 
+        
+        var body = new System.IO.StreamReader(Request.Body).ReadToEndAsync().Result;
+        dynamic obj = JsonConvert.DeserializeObject<dynamic>(body, new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.Auto
+        });
+        return Ok(obj);
+
     }
-}
+   
+} 
