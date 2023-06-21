@@ -30,12 +30,11 @@ public class InsecureUsersController : ControllerBase
         // Evitar concatenar strings para construir consultas SQL
         string strQry = "SELECT * FROM Users WHERE id='" + id + "'";
 
-
         // Usar parámetros en lugar de concatenar strings
         string strQrySecure = "SELECT * FROM Users WHERE id=@id";
 
         context.Database.ExecuteSqlCommand(strQrySecure, 
-            new SqlParameter("@id", id);
+            new SqlParameter("@id", id));
 
         return Ok();
     }
@@ -70,7 +69,7 @@ public class InsecureUsersController : ControllerBase
             ArgumentList = {
                 "/c",
                 "dir",
-                @"C:\Program Files\dotnet"
+                @"C:\Program Files\dotnet "
             }
         };
 
@@ -80,8 +79,6 @@ public class InsecureUsersController : ControllerBase
         {
             Arguments = "/c dir \"C:\\Program Files\\dotnet\""
         };
-
-
 
 
         // EJECUCIÓN VALIDADA
