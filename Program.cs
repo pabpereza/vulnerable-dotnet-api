@@ -10,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
     var env = builder.Environment;
  
     services.AddDbContext<DataContext>();
+
+
     services.AddCors();
     services.AddControllers().AddJsonOptions(x =>
     {
@@ -20,6 +22,9 @@ var builder = WebApplication.CreateBuilder(args);
         x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
     services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
+
 
     // configure DI for application services
     services.AddScoped<IUserService, UserService>();
