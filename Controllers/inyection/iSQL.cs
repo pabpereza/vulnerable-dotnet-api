@@ -19,7 +19,7 @@ public class DesSQL : ControllerBase
 
         connection.Open();
 
-        string query = "SELECT * FROM Users WHERE id='" + id + "'";
+        string query = "SELECT firstname, lastname FROM Users WHERE id='" + id + "'";
         Console.WriteLine(query);
 
         var command = connection.CreateCommand();
@@ -27,6 +27,42 @@ public class DesSQL : ControllerBase
 
         var reader = command.ExecuteReader(); 
 
+        string output = "";
+        while (reader.Read())
+         {
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                output += reader.GetName(i) + ": "  + reader.GetValue(i) + "\n";
+            }
+  
+         }
+
+        connection.Close();
+
+        return Ok(output);
+
+    }
+
+    // SQL INJECTION
+    [HttpGet("parametrized/{id}")]
+     public IActionResult GetByIdParametrized(string id)
+    {
+
+        var connection = new SqliteConnection("Data Source=LocalDatabase.db");
+
+        connection.Open();
+
+        string query = "SELECT firstname, lastname FROM Users WHERE id=@id";
+        Console.WriteLine(query);
+
+        var command = connection.CreateCommand();
+        command.CommandText = query;
+
+        command.Parameters.AddWithValue("@id", id);
+
+        var reader = command.ExecuteReader();
+        
+        
         string output = "";
         while (reader.Read())
          {
