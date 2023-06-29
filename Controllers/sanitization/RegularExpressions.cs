@@ -7,7 +7,7 @@ using WebApi.Models.Users;
 using System.Text.RegularExpressions;
 
 [ApiController]
-[Route("sanitizere")]
+[Route("sanitize")]
 
 public class SanitizeREUserController : ControllerBase
 {
@@ -26,6 +26,7 @@ public class SanitizeREUserController : ControllerBase
     [HttpPost("unsecure")]
     public IActionResult CreateUnsecureRE(CreateRequest model)
     {
+        //_userService.Create(model);
         return Ok(new { message = model });
     }
 
@@ -34,11 +35,12 @@ public class SanitizeREUserController : ControllerBase
     {
         return Ok(new { message = model });
     }
-
-    [HttpPost("pwd")]
-    public IActionResult CreatePwdRE(CreateRequest model)
-    {
-        return Ok(new { message = model });
-    }
     
+    [HttpGet("headers/{id}")]
+    public IActionResult ExampleHeaders(int id)
+    {
+        var user = _userService.GetById(id);
+        string html = "<div>My Bienvenido "+user.FirstName+"</div>";
+        return base.Content(html, "text/html");
+    }
 }
