@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 public class Clickjaking : ControllerBase
 {
 
-    // SQL INJECTION
     [HttpGet("{id}")]
     public IActionResult GetSite(string id)
     {
