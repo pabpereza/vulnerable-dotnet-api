@@ -3,6 +3,10 @@ logs
 *.log
 npm-debug.log*
 
+# SQL Lite
+*.*-shm
+*.*-wal
+
 # Runtime data
 pids
 *.pid
