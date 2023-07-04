@@ -26,19 +26,40 @@ public class SanitizeREUserController : ControllerBase
     [HttpPost("unsecure")]
     public IActionResult CreateUnsecureRE(CreateRequest model)
     {
-        //_userService.Create(model);
+        _userService.Create(model);
         return Ok(new { message = model });
     }
 
     [HttpPost("secure")]
     public IActionResult CreateSecureRE(CreateRequest model)
     {
+        string patternName = @"^[a-zA-Z]+$";
+        Regex rgxName = new Regex(patternName);
+        if (!rgxName.IsMatch(model.FirstName) || !rgxName.IsMatch(model.LastName))
+        {
+            return BadRequest(new { message = "Invalid input" });
+        }
+        string patternTitle = @"^(Ms|Mr)$";
+        Regex rgxTitle = new Regex(patternTitle);
+        if (!rgxTitle.IsMatch(model.Title))
+        {
+            return BadRequest(new { message = "Invalid input" });
+        }
+        string patternPwd = @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$";
+        Regex rgxPwd = new Regex(patternPwd);   
+        if (!rgxPwd.IsMatch(model.Password))
+        {
+            return BadRequest(new { message = "Invalid input" });
+        }
         return Ok(new { message = model });
     }
     
     [HttpGet("headers/{id}")]
     public IActionResult ExampleHeaders(int id)
     {
+        //HttpContext.Response.Headers.Add("X-XSS-Protection", "1");
+        HttpContext.Response.Headers.Add("Content-Security-Policy", "default-src 'self'");
+        
         var user = _userService.GetById(id);
         string html = "<div>My Bienvenido "+user.FirstName+"</div>";
         return base.Content(html, "text/html");
