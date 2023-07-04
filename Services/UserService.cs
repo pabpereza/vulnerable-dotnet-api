@@ -13,6 +13,7 @@ public interface IUserService
     void Create(CreateRequest model);
     void Update(int id, UpdateRequest model);
     void Delete(int id);
+    User Authenticate(string email, string password);
 }
 
 public class UserService : IUserService
@@ -86,6 +87,25 @@ public class UserService : IUserService
     {
         var user = _context.Users.Find(id);
         if (user == null) throw new KeyNotFoundException("User not found");
+        return user;
+    }
+
+    public User Authenticate(string email, string password)
+    {
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            return null;
+
+        var user = _context.Users.SingleOrDefault(x => x.Email == email);
+
+        // check if username exists
+        if (user == null)
+            return null;
+
+        // check if password is correct
+        if (!BCrypt.Verify(password, user.PasswordHash))
+            return null;
+
+        // authentication successful
         return user;
     }
 }

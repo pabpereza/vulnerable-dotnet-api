@@ -8,6 +8,9 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        //Login request
+        CreateMap<LoginRequest, Login>();
+
         // CreateRequest -> User
         CreateMap<CreateRequest, User>();
 
@@ -25,6 +28,6 @@ public class AutoMapperProfile : Profile
 
                     return true;
                 }
-            ));
+            ));        
     }
 }
