@@ -5,7 +5,6 @@ using WebApi.Models.Users;
 using WebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authentication;
 
 public class HomeController: ControllerBase
 {

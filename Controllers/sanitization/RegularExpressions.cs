@@ -61,7 +61,20 @@ public class SanitizeREUserController : ControllerBase
         HttpContext.Response.Headers.Add("Content-Security-Policy", "default-src 'self'");
         
         var user = _userService.GetById(id);
-        string html = "<div>My Bienvenido "+user.FirstName+"</div>";
+        string html = "<div>Bienvenido "+user.FirstName+"</div>";
         return base.Content(html, "text/html");
+    }
+
+    [HttpGet("headers/cors")]
+    public IActionResult ExampleHeadersCors()
+    {
+        var html = System.IO.File.ReadAllText(@"./Files/CORS.html");
+        return base.Content(html, "text/html");
+    }
+
+    [HttpGet("headers/cors/data")]
+    public IActionResult ExampleHeadersCorsData()
+    {        
+        return Ok("Hola a todos!!");
     }
 }
