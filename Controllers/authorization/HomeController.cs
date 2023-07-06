@@ -24,7 +24,7 @@ public class HomeController: ControllerBase
     [HttpPost]
     public IActionResult LoginAdmin(LoginRequest model)
     {
-        var user = _userService.GetById(13);
+        var user = _userService.GetById(7);
 
         if (user == null)
             return BadRequest(new { message = "Username or password is incorrect" });
@@ -37,7 +37,7 @@ public class HomeController: ControllerBase
     [HttpPost]
     public IActionResult LoginUser(LoginRequest model)
     {
-        var user = _userService.GetById(12);
+        var user = _userService.GetById(6);
 
         if (user == null)
             return BadRequest(new { message = "Username or password is incorrect" });

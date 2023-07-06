@@ -4,6 +4,7 @@ using WebApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.CookiePolicy;
 
 // Necesario añadir el paquete 
 //dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 6.0.19
@@ -23,7 +24,6 @@ var builder = WebApplication.CreateBuilder(args);
     {
         // serialize enums as strings in api responses (e.g. Role)
         x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-
         // ignore omitted parameters on models to enable optional params (e.g. User update)
         x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
@@ -33,14 +33,17 @@ var builder = WebApplication.CreateBuilder(args);
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<ITokenService, TokenService>();
 
-    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(jwt=>{
+    services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(jwt=>{
         jwt.TokenValidationParameters = new TokenValidationParameters{
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("This is my custom Secret key for authentication")),
-            ValidateLifetime = true,
+            ValidateLifetime = false,
             ValidateIssuer = false,
-            ValidateAudience = false,
-            ClockSkew = TimeSpan.Zero
+            ValidateAudience = false
         };
         jwt.Events = new JwtBearerEvents
             {
@@ -51,13 +54,13 @@ var builder = WebApplication.CreateBuilder(args);
                 },
             };
     });
-/*
-    services.AddSession(options =>
+
+    services.AddCookiePolicy(options =>
     {
-        options.IdleTimeout = TimeSpan.FromMinutes(30);
-        options.Cookie.HttpOnly = true;
-        options.Cookie.IsEssential = true;
-    }); */
+        options.MinimumSameSitePolicy = SameSiteMode.Strict;
+        options.HttpOnly = HttpOnlyPolicy.Always;
+        options.Secure = env.IsDevelopment() ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
+    });
 }
 
 var app = builder.Build();
@@ -76,7 +79,6 @@ var app = builder.Build();
     app.UseAuthentication();
     app.UseAuthorization();
 
-    //app.UseSession();
 
     app.MapControllers();
 }
