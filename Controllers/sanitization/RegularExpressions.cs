@@ -8,16 +8,13 @@ using System.Text.RegularExpressions;
 
 [ApiController]
 [Route("sanitize")]
-
 public class SanitizeREUserController : ControllerBase
 {
 
     private IUserService _userService;
     private IMapper _mapper;
 
-    public SanitizeREUserController(
-        IUserService userService,
-        IMapper mapper)
+    public SanitizeREUserController(IUserService userService,IMapper mapper)
     {
         _userService = userService;
         _mapper = mapper;
@@ -58,7 +55,7 @@ public class SanitizeREUserController : ControllerBase
     public IActionResult ExampleHeaders(int id)
     {
         //HttpContext.Response.Headers.Add("X-XSS-Protection", "1");
-        HttpContext.Response.Headers.Add("Content-Security-Policy", "default-src 'self'");
+        //HttpContext.Response.Headers.Add("Content-Security-Policy", "default-src 'self'");
         
         var user = _userService.GetById(id);
         string html = "<div>Bienvenido "+user.FirstName+"</div>";
