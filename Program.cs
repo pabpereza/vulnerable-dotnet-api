@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 // Necesario añadir el paquete 
 //dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 6.0.19
@@ -18,7 +19,10 @@ var builder = WebApplication.CreateBuilder(args);
  
     services.AddDbContext<DataContext>();
 
-
+       services.Configure<KestrelServerOptions>(options =>
+    {
+        options.AllowSynchronousIO = true;
+    });
     services.AddCors();
 
     services.AddControllers().AddJsonOptions(x =>
@@ -55,19 +59,32 @@ var builder = WebApplication.CreateBuilder(args);
                 },
             };
     });
+
+    services.AddCookiePolicy(options =>
+    {
+        options.MinimumSameSitePolicy = SameSiteMode.Strict;
+        options.HttpOnly = HttpOnlyPolicy.Always;
+        options.Secure = env.IsDevelopment() ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
+    });
 }
 
 var app = builder.Build();
 
 // configure HTTP request pipeline
 {
+
+    app.Use(async (context, next) =>
+    {
+        context.Request.EnableBuffering();
+        await next();
+    });
     app.UseRouting();
     // global cors policy
     app.UseCors(x => x
         .AllowAnyOrigin()
         .AllowAnyMethod()
         .AllowAnyHeader());
-        
+
     // global error handler
     app.UseMiddleware<ErrorHandlerMiddleware>();
     app.UseAuthentication();
