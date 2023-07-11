@@ -21,6 +21,7 @@ var builder = WebApplication.CreateBuilder(args);
 
     services.AddCors();
 
+
     services.AddControllers().AddJsonOptions(x =>
     {
         // serialize enums as strings in api responses (e.g. Role)
@@ -55,25 +56,18 @@ var builder = WebApplication.CreateBuilder(args);
                 },
             };
     });
-
-    services.AddCookiePolicy(options =>
-    {
-        options.MinimumSameSitePolicy = SameSiteMode.Strict;
-        options.HttpOnly = HttpOnlyPolicy.Always;
-        options.Secure = env.IsDevelopment() ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
-    });
 }
 
 var app = builder.Build();
 
 // configure HTTP request pipeline
 {
-
+    /*
     app.Use(async (context, next) =>
     {
         context.Request.EnableBuffering();
         await next();
-    });
+    });*/
     app.UseRouting();
     // global cors policy
     app.UseCors(x => x
