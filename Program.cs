@@ -19,10 +19,6 @@ var builder = WebApplication.CreateBuilder(args);
  
     services.AddDbContext<DataContext>();
 
-       services.Configure<KestrelServerOptions>(options =>
-    {
-        options.AllowSynchronousIO = true;
-    });
     services.AddCors();
 
     services.AddControllers().AddJsonOptions(x =>
@@ -94,4 +90,4 @@ var app = builder.Build();
     app.MapControllers();
 }
 
-app.Run("http://localhost:4000");
+app.Run("http://0.0.0.0:4000");
