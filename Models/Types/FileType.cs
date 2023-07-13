@@ -27,7 +27,7 @@ public abstract class FileType
 
     public bool VerifyExtension(string extension)
     {
-        return Extensions.Any(ext => ext == extension);
+        return Extensions.Contains(extension);
     }
     
     public bool VerifySignature(Stream stream)
