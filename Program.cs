@@ -21,6 +21,10 @@ var builder = WebApplication.CreateBuilder(args);
 
     services.AddCors();
 
+    services.Configure<KestrelServerOptions>(options =>
+    {
+        options.AllowSynchronousIO = true;
+    });
 
     services.AddControllers().AddJsonOptions(x =>
     {
@@ -62,12 +66,12 @@ var app = builder.Build();
 
 // configure HTTP request pipeline
 {
-    /*
+    
     app.Use(async (context, next) =>
     {
         context.Request.EnableBuffering();
         await next();
-    });*/
+    });
     app.UseRouting();
     // global cors policy
     app.UseCors(x => x
